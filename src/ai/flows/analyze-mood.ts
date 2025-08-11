@@ -19,7 +19,7 @@ const MoodAnalysisInputSchema = z.object({
 export type MoodAnalysisInput = z.infer<typeof MoodAnalysisInputSchema>;
 
 const MoodAnalysisOutputSchema = z.object({
-  vibe: z.string().describe('An appropriate music genre from Spotify based on the mood (e.g., "upbeat", "dance", "sad", "ambient", "rock", "pop").'),
+  vibe: z.string().describe('An appropriate music genre or vibe from Spotify based on the mood (e.g., "upbeat dance", "chill study beats", "sad indie", "empowering rock").'),
 });
 export type MoodAnalysisOutput = z.infer<typeof MoodAnalysisOutputSchema>;
 
@@ -36,7 +36,7 @@ const prompt = ai.definePrompt({
 Mood: {{{mood}}}
 Language Preference: {{{language}}}
 
-Respond with a single, relevant Spotify genre that fits the mood. For example: "pop", "dance", "sad", "ambient", "happy", "rock", "hip-hop".
+Respond with a short, descriptive search query (2-3 words) that would find a good playlist on Spotify. For example: "feel good pop", "sad rap", "upbeat workout", "chill ambient", "summer indie".
 `, 
 });
 
