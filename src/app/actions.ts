@@ -7,7 +7,7 @@ import { getPlaylistByVibe } from '@/lib/spotify';
 import { z } from 'zod';
 
 const formSchema = z.object({
-  mood: z.string().min(2, {
+  mood: z.string().min(1, {
     message: 'Please tell us a bit more about your mood.',
   }),
   language: z.string(),
@@ -22,17 +22,16 @@ export async function generatePlaylistAction(
   mood?: string;
 }> {
   try {
+    const mood = formData.get('mood') as string;
     const validatedFields = formSchema.safeParse({
-      mood: formData.get('mood'),
+      mood: mood,
       language: formData.get('language'),
     });
     
-    const mood = formData.get('mood') as string;
-
     if (!validatedFields.success) {
       return {
         playlist: null,
-        error: validatedFields.error.flatten().fieldErrors.mood?.[0] || 'Invalid input.',
+        error: validatedFields.error.flatten().fieldErrors.mood?.[0] || 'An unknown validation error occurred.',
         mood: mood,
       };
     }
