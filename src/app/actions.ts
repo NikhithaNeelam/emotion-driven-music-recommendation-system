@@ -26,30 +26,33 @@ export async function generatePlaylistAction(
       mood: formData.get('mood'),
       language: formData.get('language'),
     });
+    
+    const mood = formData.get('mood') as string;
 
     if (!validatedFields.success) {
       return {
         playlist: null,
         error: validatedFields.error.flatten().fieldErrors.mood?.[0] || 'Invalid input.',
+        mood: mood,
       };
     }
     
-    const { mood, language } = validatedFields.data;
+    const { language } = validatedFields.data;
 
     const moodAnalysis = await analyzeMood({ mood, language });
     const vibe = moodAnalysis.vibe;
 
     if (!vibe) {
-      return { playlist: null, error: 'Could not determine the vibe from your mood. Please try being more descriptive.' };
+      return { playlist: null, error: 'Could not determine the vibe from your mood. Please try being more descriptive.', mood: mood };
     }
     
     const playlist = await getPlaylistByVibe(vibe, language);
 
-    return { playlist, error: null };
+    return { playlist, error: null, mood: mood };
   } catch (error) {
     console.error(error);
     const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred.';
-    return { playlist: null, error: errorMessage };
+    return { playlist: null, error: errorMessage, mood: formData.get('mood') as string };
   }
 }
 
