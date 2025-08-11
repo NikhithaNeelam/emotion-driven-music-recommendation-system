@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useFormStatus } from 'react-dom';
@@ -16,7 +17,8 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Camera } from 'lucide-react';
+import { Separator } from './ui/separator';
 
 const formSchema = z.object({
   mood: z.string().min(2, {
@@ -27,12 +29,33 @@ const formSchema = z.object({
 
 const languages = [
   { value: 'English', label: 'English' },
+  { value: 'Any', label: 'Any Language' },
+  { value: 'Assamese', label: 'Assamese' },
+  { value: 'Bengali', label: 'Bengali' },
+  { value: 'Bodo', label: 'Bodo' },
+  { value: 'Dogri', label: 'Dogri' },
+  { value: 'Gujarati', label: 'Gujarati' },
+  { value: 'Hindi', label: 'Hindi' },
+  { value: 'Kannada', label: 'Kannada' },
+  { value: 'Kashmiri', label: 'Kashmiri' },
+  { value: 'Konkani', label: 'Konkani' },
+  { value: 'Maithili', label: 'Maithili' },
+  { value: 'Malayalam', label: 'Malayalam' },
+  { value: 'Manipuri', label: 'Manipuri' },
+  { value: 'Marathi', label: 'Marathi' },
+  { value: 'Nepali', label: 'Nepali' },
+  { value: 'Odia', label: 'Odia' },
+  { value: 'Punjabi', label: 'Punjabi' },
+  { value: 'Sanskrit', label: 'Sanskrit' },
+  { value: 'Santali', label: 'Santali' },
+  { value: 'Sindhi', label: 'Sindhi' },
+  { value: 'Tamil', label: 'Tamil' },
+  { value: 'Telugu', label: 'Telugu' },
+  { value: 'Urdu', label: 'Urdu' },
   { value: 'Spanish', label: 'Spanish' },
   { value: 'French', label: 'French' },
   { value: 'German', label: 'German' },
-  { value: 'Hindi', label: 'Hindi' },
   { value: 'Japanese', label: 'Japanese' },
-  { value: 'Any', label: 'Any Language' },
 ];
 
 function SubmitButton() {
@@ -47,9 +70,12 @@ function SubmitButton() {
 
 interface VibeSyncFormProps {
   formAction: (formData: FormData) => void;
+  onDetectEmotion: () => void;
+  detectedMood: string | null;
+  isDetecting: boolean;
 }
 
-export function VibeSyncForm({ formAction }: VibeSyncFormProps) {
+export function VibeSyncForm({ formAction, onDetectEmotion, detectedMood, isDetecting }: VibeSyncFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,12 +84,18 @@ export function VibeSyncForm({ formAction }: VibeSyncFormProps) {
     },
   });
 
+  useEffect(() => {
+    if (detectedMood) {
+      form.setValue('mood', detectedMood);
+    }
+  }, [detectedMood, form]);
+
   return (
     <Card className="w-full max-w-2xl mx-auto shadow-lg border-primary/20">
       <CardHeader>
         <CardTitle className="font-headline text-2xl">How are you feeling?</CardTitle>
         <CardDescription>
-          Describe your mood or drop an emoji. We'll craft the perfect playlist for you.
+          Describe your mood, or let us detect it from your camera.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -118,6 +150,24 @@ export function VibeSyncForm({ formAction }: VibeSyncFormProps) {
                 />
               </div>
             </div>
+            
+            <div className="space-y-4">
+              <div className="relative">
+                <Separator />
+                <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                    <div className="w-full border-t border-border" />
+                </div>
+                <div className="relative flex justify-center">
+                    <span className="bg-card px-2 text-sm text-muted-foreground">OR</span>
+                </div>
+              </div>
+
+               <Button onClick={onDetectEmotion} type="button" variant="outline" size="lg" className="w-full" disabled={isDetecting}>
+                  <Camera className="mr-2 h-5 w-5" />
+                  {isDetecting ? 'Analyzing...' : 'Detect Mood from Camera'}
+               </Button>
+            </div>
+            
             <SubmitButton />
           </form>
         </Form>
