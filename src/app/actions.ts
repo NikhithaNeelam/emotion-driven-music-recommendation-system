@@ -10,7 +10,7 @@ const formSchema = z.object({
   mood: z.string().min(1, {
     message: 'Please tell us a bit more about your mood.',
   }),
-  language: z.string(),
+  language: z.string().min(1, { message: 'Please select a language.' }),
 });
 
 export async function generatePlaylistAction(
@@ -22,21 +22,22 @@ export async function generatePlaylistAction(
   mood?: string;
 }> {
   try {
-    const mood = formData.get('mood') as string;
     const validatedFields = formSchema.safeParse({
-      mood: mood,
+      mood: formData.get('mood'),
       language: formData.get('language'),
     });
     
     if (!validatedFields.success) {
+      const fieldErrors = validatedFields.error.flatten().fieldErrors;
+      const errorMessage = fieldErrors.mood?.[0] || fieldErrors.language?.[0] || 'An unknown validation error occurred.';
       return {
         playlist: null,
-        error: validatedFields.error.flatten().fieldErrors.mood?.[0] || 'An unknown validation error occurred.',
-        mood: mood,
+        error: errorMessage,
+        mood: formData.get('mood') as string,
       };
     }
     
-    const { language } = validatedFields.data;
+    const { mood, language } = validatedFields.data;
 
     const moodAnalysis = await analyzeMood({ mood, language });
     const vibe = moodAnalysis.vibe;
