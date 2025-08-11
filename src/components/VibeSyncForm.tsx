@@ -132,7 +132,7 @@ export function VibeSyncForm({ formAction, onDetectEmotion, detectedMood, isDete
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Music Language</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} defaultValue={field.value} name={field.name}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select a language" />
