@@ -1,5 +1,5 @@
 # VibeSync: Your Mood-Based Playlist Generator
-
+demo video :https://drive.google.com/file/d/1-EK5yHxPNR36Sgc2lRdva9qRtDxnbcMv/view?usp=drivesdk 
 VibeSync is a smart music discovery web application that creates personalized Spotify playlists based on your current mood. You can either describe how you're feeling in your own words or let the app use your camera to instantly detect your emotion and find the perfect soundtrack for your moment.
 
 This project is built with Next.js, TypeScript, Tailwind CSS, ShadCN for UI components, and Google's Genkit for the AI-powered mood analysis.
